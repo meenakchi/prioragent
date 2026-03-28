@@ -100,5 +100,32 @@ router.get('/patient/:patientId', requireAuth, (req: Request, res: Response) => 
   const requests = priorAuthWorkflow.listRequests(req.params.patientId);
   res.json(requests);
 });
+import { priorAuthAgentLoop } from '../services/ai/agentLoop.service';
 
+// Agentic endpoint — Claude drives the full workflow autonomously
+router.post('/agent/run', requireAuth, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { patientId, insurerId, medicationId } = req.body;
+
+    if (!patientId || !insurerId) {
+      res.status(400).json({ error: 'patientId and insurerId are required' });
+      return;
+    }
+
+    logger.info(`[Agent Route] Running autonomous agent for patient=${patientId}`);
+
+    const result = await priorAuthAgentLoop.run({
+      patientId,
+      insurerId,
+      medicationId,
+      onStatusUpdate: (tool, detail) => {
+        logger.info(`[Agent] Using tool: ${tool} — ${detail.slice(0, 100)}`);
+      },
+    });
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
 export default router;
