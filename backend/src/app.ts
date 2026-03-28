@@ -13,7 +13,8 @@ import { logger } from './utils/logger';
 
 const app = express();
 
-// CORS
+// ── CORS ─────────────────────────────────────────────────────────────────────
+// Must come before everything else so OPTIONS pre-flight requests work
 app.use(cors({
   origin: env.frontendUrl,
   credentials: true,
@@ -21,43 +22,50 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Body parsing
+// ── Body parsing ──────────────────────────────────────────────────────────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Session (required by express-openid-connect)
+// ── Session ───────────────────────────────────────────────────────────────────
+// MUST come before express-openid-connect
+// Use SESSION_SECRET (not auth0Secret) so it doesn't change with Auth0 config
+
 app.use(session({
-  secret: env.auth0Secret,
+  secret: env.sessionSecret,    // must match auth0Config.secret
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: env.nodeEnv === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
+    sameSite: env.nodeEnv === 'production' ? 'none' : 'lax',
   },
 }));
 
-// Auth0 OIDC middleware
-app.use(auth(auth0Config));
+app.use(auth(auth0Config)); // <-- after session
+// ── Auth0 OIDC middleware ─────────────────────────────────────────────────────
+// This automatically registers:
+//   GET /callback  — handles the authorization code from Auth0
+// Do NOT define your own /callback route anywhere.
 
-// Request logging
+// ── Request logging ───────────────────────────────────────────────────────────
 app.use((req, _res, next) => {
   logger.info(`${req.method} ${req.path}`);
   next();
 });
 
-// Routes
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/ehr', ehrRoutes);
 app.use('/api/prior-auth', priorAuthRoutes);
 app.use('/api/token-vault', tokenVaultRoutes);
 
-// Health check
+// ── Health check ──────────────────────────────────────────────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'PriorAgent', timestamp: new Date().toISOString() });
 });
 
-// Error handling
+// ── Global error handler ──────────────────────────────────────────────────────
 app.use(errorMiddleware);
 
 export default app;

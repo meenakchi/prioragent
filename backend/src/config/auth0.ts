@@ -4,8 +4,8 @@ import { env } from './env';
 export const auth0Config: ConfigParams = {
   authRequired: false,
   auth0Logout: true,
-  secret: env.auth0Secret,
-  baseURL: env.auth0BaseUrl,
+  secret: env.sessionSecret,
+  baseURL: env.auth0BaseUrl,           // http://localhost:3001
   clientID: env.auth0ClientId,
   issuerBaseURL: `https://${env.auth0Domain}`,
   clientSecret: env.auth0ClientSecret,
@@ -15,7 +15,8 @@ export const auth0Config: ConfigParams = {
     scope: 'openid profile email offline_access',
   },
   routes: {
-    login: false,
-    logout: false,
+    login: false,   // we handle /api/auth/login manually
+    logout: false,  // we handle /api/auth/logout manually
   },
+ 
 };

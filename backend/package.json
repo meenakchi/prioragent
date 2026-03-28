@@ -4,7 +4,7 @@
   "description": "PriorAgent backend — AI insurance prior auth agent secured by Auth0 Token Vault",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
