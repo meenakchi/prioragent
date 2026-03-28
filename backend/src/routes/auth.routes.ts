@@ -18,9 +18,8 @@ router.get('/logout', (req: Request, res: Response) => {
   res.oidc.logout({ returnTo: process.env.FRONTEND_URL || 'http://localhost:5173' });
 });
 
-// Callback is handled automatically by express-openid-connect
-// but we expose /callback so we can register it in Auth0 dashboard
-router.get('/callback', (_req: Request, res: Response) => {
+router.get('/callback', (req: Request, res: Response) => {
+  // Only reached after OIDC middleware finishes
   res.redirect(process.env.FRONTEND_URL || 'http://localhost:5173');
 });
 

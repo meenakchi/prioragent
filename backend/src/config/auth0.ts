@@ -17,6 +17,5 @@ export const auth0Config: ConfigParams = {
   routes: {
     login: false,
     logout: false,
-    callback: '/api/auth/callback',
   },
 };
