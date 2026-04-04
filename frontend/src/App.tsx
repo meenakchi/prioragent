@@ -197,6 +197,153 @@ function Badge({ status }: { status: WorkflowStatus }) {
   );
 }
 
+// ─── Ticker ───────────────────────────────────────────────────────────────────
+
+const TICKER_ITEMS = [
+  "Auto-submit",
+  "Seconds not days",
+  "Patient-controlled",
+  "Auth0 Token Vault",
+  "Epic FHIR R4",
+  "Claude AI",
+  "CIBA Consent",
+  "Insurer Submission",
+];
+
+function Ticker() {
+  const items = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  return (
+    <div style={{ background: T.dark, overflow: "hidden", position: "relative", zIndex: 5, padding: "13px 0" }}>
+      <style>{`
+        @keyframes tickerScroll {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .ticker-track {
+          display: flex;
+          animation: tickerScroll 28s linear infinite;
+          width: max-content;
+        }
+        .ticker-track:hover { animation-play-state: paused; }
+      `}</style>
+      <div className="ticker-track">
+        {items.map((label, i) => (
+          <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: "8px", color: "#fff", fontSize: "13px", fontWeight: "600", fontFamily: T.sans, whiteSpace: "nowrap", padding: "0 28px" }}>
+            <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: T.green, flexShrink: 0, display: "inline-block" }} />
+            {label}
+            <span style={{ color: "#555", marginLeft: "6px" }}>|</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Stats section ────────────────────────────────────────────────────────────
+
+const STATS = [
+  { value: "$13B",  label: "Annual PA cost burden" },
+  { value: "4.5h",  label: "Saved per authorization" },
+  { value: "94%",   label: "Approval rate" },
+];
+
+function StatsSection() {
+  return (
+    <div style={{ position: "relative", zIndex: 5, display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap", padding: "0 24px 52px" }}>
+      {STATS.map((s) => (
+        <div key={s.value} style={{ background: T.card, border: `1.5px solid ${T.border}`, borderRadius: "18px", padding: "32px 44px", minWidth: "180px", textAlign: "center", boxShadow: "0 2px 16px rgba(26,26,46,0.06)" }}>
+          <div style={{ fontSize: "40px", fontWeight: "900", color: T.dark, fontFamily: T.serif, letterSpacing: "-0.03em", lineHeight: 1.1 }}>{s.value}</div>
+          <div style={{ fontSize: "13px", color: T.muted, marginTop: "6px", fontFamily: T.sans }}>{s.label}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── How it works section ─────────────────────────────────────────────────────
+
+const HOW_IT_WORKS = [
+  {
+    color: "#fce7f3",
+    iconColor: "#9d174d",
+    title: "CIBA Step-up Consent",
+    desc: "Patient approves on their device before a single byte of health data is accessed. Auth0 CIBA delivers a push notification; the agent waits for a cryptographic approval.",
+    icon: (
+      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </svg>
+    ),
+  },
+  {
+    color: "#dbeafe",
+    iconColor: "#1e40af",
+    title: "Epic FHIR R4 Access",
+    desc: "Auth0 Token Vault holds the SMART token. Records pulled live from Epic (conditions, medications, observations, lab results) with no credentials stored in PriorAgent.",
+    icon: (
+      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+      </svg>
+    ),
+  },
+  {
+    color: "#dcfce7",
+    iconColor: "#166534",
+    title: "Claude AI Analysis",
+    desc: "Claude reads the full clinical picture and drafts a complete, insurer-specific prior auth form: ICD-10 codes, clinical justification, NDC, prior treatments, all in seconds.",
+    icon: (
+      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v4l3 3" />
+      </svg>
+    ),
+  },
+  {
+    color: "#fef9c3",
+    iconColor: "#713f12",
+    title: "Instant Submission",
+    desc: "The completed form goes straight to the insurer. Reference number, expected decision date, and full audit trail returned immediately. No fax, no portal login, no waiting.",
+    icon: (
+      <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+      </svg>
+    ),
+  },
+];
+
+function HowItWorksSection() {
+  return (
+    <div style={{ position: "relative", zIndex: 5, maxWidth: "1100px", margin: "0 auto", padding: "72px 24px 80px" }}>
+      {/* Label */}
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <span style={{ display: "inline-block", background: "#fce7f3", border: "1.5px solid #f9a8d4", color: "#9d174d", borderRadius: "100px", padding: "6px 20px", fontSize: "11px", fontWeight: "800", letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: T.sans }}>
+          How it works
+        </span>
+      </div>
+
+      {/* Heading */}
+      <h2 style={{ textAlign: "center", fontSize: "clamp(36px, 6vw, 56px)", fontWeight: "900", color: T.dark, letterSpacing: "-0.03em", lineHeight: "1.1", margin: "0 0 56px", fontFamily: T.serif }}>
+        From records to approval,<br />fully automated.
+      </h2>
+
+      {/* Cards grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "20px" }}>
+        {HOW_IT_WORKS.map((item) => (
+          <div key={item.title} style={{ background: T.card, border: `1.5px solid ${T.border}`, borderRadius: "18px", padding: "28px 24px" }}>
+            <div style={{ width: "44px", height: "44px", background: item.color, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", color: item.iconColor, marginBottom: "18px", flexShrink: 0 }}>
+              {item.icon}
+            </div>
+            <div style={{ fontSize: "16px", fontWeight: "800", color: T.dark, marginBottom: "10px", fontFamily: T.serif }}>{item.title}</div>
+            <div style={{ fontSize: "13px", color: "#666", lineHeight: "1.7", fontFamily: T.sans }}>{item.desc}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
+
 // ─── Hero / Landing ───────────────────────────────────────────────────────────
 
 function Hero({ onLogin }: { onLogin: () => void }) {
@@ -204,7 +351,7 @@ function Hero({ onLogin }: { onLogin: () => void }) {
     <div style={{ background: T.bg, minHeight: "100vh", position: "relative", overflow: "hidden", fontFamily: T.sans }}>
       {/* Background decorative shapes matching screenshot */}
       <div style={{ position: "absolute", top: "-60px", right: "-60px", width: "300px", height: "300px", background: T.yellow, borderRadius: "50%", zIndex: 0 }} />
-      <div style={{ position: "absolute", top: "220px", right: "60px", width: "200px", height: "200px", background: T.coral, borderRadius: "50%", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "450px", left: "30px", width: "200px", height: "200px", background: T.coral, borderRadius: "50%", zIndex: 0 }} />
       <div style={{ position: "absolute", bottom: "40px", left: "30px", width: "180px", height: "180px", background: T.green, borderRadius: "50%", zIndex: 0 }} />
       <div style={{ position: "absolute", top: "185px", left: "275px", width: "56px", height: "56px", background: T.blue, borderRadius: "10px", transform: "rotate(5deg)", zIndex: 0 }} />
       <div style={{ position: "absolute", top: "275px", right: "375px", width: "20px", height: "20px", background: T.coral, clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)", zIndex: 0 }} />
@@ -261,13 +408,24 @@ function Hero({ onLogin }: { onLogin: () => void }) {
       </div>
 
       {/* Feature chips */}
-      <div style={{ position: "relative", zIndex: 5, display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap", padding: "16px 24px 60px" }}>
+      <div style={{ position: "relative", zIndex: 5, display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap", padding: "16px 24px 52px" }}>
         {["Auth0 Token Vault", "CIBA Step-up Auth", "Epic FHIR R4", "Claude AI", "Insurer Submission"].map((f) => (
           <span key={f} style={{ background: "#fff", border: `1.5px solid ${T.border}`, borderRadius: "100px", padding: "8px 18px", fontSize: "13px", color: "#555", fontWeight: "500" }}>
             {f}
           </span>
         ))}
       </div>
+
+      {/* ── NEW: Stats section ── */}
+      <StatsSection />
+
+      {/* ── NEW: Scrolling ticker ── */}
+      <Ticker />
+
+      {/* ── NEW: How it works ── */}
+      <HowItWorksSection />
+
+
     </div>
   );
 }
